@@ -63,24 +63,14 @@ public class DetailActivity extends AppCompatActivity {
             tvRoverStatus.setBackgroundResource(R.drawable.badge_complete);
         }
 
-        // Load the full-resolution image with a loading spinner
-        progressImg.setVisibility(View.VISIBLE);
-        imgFull.setTag(photo.getImgSrc());
-
-        // Use ImageLoader; hide spinner once image appears
-        ImageLoader.load(photo.getImgSrc(), imgFull);
-
-        // Poll until the tag is still valid and image is set, then hide spinner
-        imgFull.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (imgFull.getDrawable() != null) {
-                    progressImg.setVisibility(View.GONE);
-                } else {
-                    imgFull.postDelayed(this, 300);
-                }
+        // Load image
+        ImageLoader.load(photo.getImgSrc(), imgFull, success -> {
+            progressImg.setVisibility(View.GONE);
+            if (!success) {
+                // Show placeholder prompt when loading fails
+                imgFull.setImageResource(android.R.drawable.ic_menu_gallery);
             }
-        }, 300);
+        });
     }
 
     @Override

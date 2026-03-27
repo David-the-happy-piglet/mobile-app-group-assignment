@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
 public class NasaApiClient {
 
     // Get a free key at https://api.nasa.gov/  (DEMO_KEY: 30 req/hr, 50 req/day per IP)
-    private static final String API_KEY = "DEMO_KEY";
+    private static final String API_KEY = "0UshwmRznbPFXKacRzXbVQeR4cm6nSkpflqXa7DO";
     private static final String BASE_URL = "https://api.nasa.gov";
     private static final ExecutorService executor = Executors.newFixedThreadPool(3);
 
@@ -167,6 +167,7 @@ public class NasaApiClient {
     private static String friendlyError(Exception e) {
         String msg = e.getMessage();
         if (msg == null) return "Unknown error occurred.";
+        if (msg.contains("HTTP 404")) return "No photos found for this Sol. Try a different Sol number.";  // ← 新增
         if (msg.contains("HTTP 429")) return "Rate limit reached. Please wait a minute and try again.";
         if (msg.contains("HTTP 403")) return "API key invalid or rate limit exceeded.";
         if (msg.contains("UnknownHost") || msg.contains("unable to resolve"))

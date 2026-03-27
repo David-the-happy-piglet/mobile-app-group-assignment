@@ -65,6 +65,47 @@ public class ImageLoader {
         });
     }
 
+    public interface LoadCallback {
+        void onFinished(boolean success);
+    }
+
+    public static void load(String url, ImageView imageView, LoadCallback callback) {
+        if (url == null || url.isEmpty() || imageView == null) {
+            if (callback != null) callback.onFinished(false);
+            return;
+        }
+
+        String httpsUrl = forceHttps(url);
+
+        Bitmap cached = cache.get(httpsUrl);
+        if (cached != null) {
+            imageView.setImageBitmap(cached);
+            if (callback != null) callback.onFinished(true);
+            return;
+        }
+
+        imageView.setTag(httpsUrl);
+        imageView.setImageBitmap(null);
+
+        Handler handler = new Handler(Looper.getMainLooper());
+        executor.execute(() -> {
+            Bitmap bitmap = downloadBitmap(httpsUrl);
+            if (bitmap != null) {
+                cache.put(httpsUrl, bitmap);
+                handler.post(() -> {
+                    if (httpsUrl.equals(imageView.getTag())) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                    if (callback != null) callback.onFinished(true);
+                });
+            } else {
+                handler.post(() -> {
+                    if (callback != null) callback.onFinished(false);
+                });
+            }
+        });
+    }
+
     // ── Network ───────────────────────────────────────────────────────────────
 
     private static Bitmap downloadBitmap(String urlString) {
