@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Space theme colors -->
+    <color name="space_bg">#0D1B2A</color>
+    <color name="space_surface">#1B2D4A</color>
+
+    <!-- NASA brand colors -->
+    <color name="nasa_blue">#0B3D91</color>
+    <color name="nasa_blue_light">#4FC3F7</color>
+    <color name="nasa_red">#FC3D21</color>
+
+    <!-- Text -->
+    <color name="white">#FFFFFF</color>
+    <color name="text_primary">#E8EAF6</color>
+    <color name="text_secondary">#90A4AE</color>
+
+    <!-- UI accents -->
+    <color name="divider_color">#2A3F5F</color>
+    <color name="thumbnail_placeholder">#0D1B2A</color>
+    <color name="error_red">#FF5252</color>
+    <color name="badge_active_bg">#2E7D32</color>
+    <color name="badge_complete_bg">#546E7A</color>
+
+    <!-- Required by Material theme -->
+    <color name="colorPrimary">#0B3D91</color>
+    <color name="colorPrimaryDark">#0D1B2A</color>
+    <color name="colorAccent">#4FC3F7</color>
+</resources>

@@ -1,0 +1,58 @@
+[
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/drawable_badge_complete.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/drawable/badge_complete.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/layout_activity_apod.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/layout/activity_apod.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/layout_activity_results.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/layout/activity_results.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/layout_activity_detail.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/layout/activity_detail.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/layout_activity_main.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.group.nasaspaceexplorer.app-debug-33:/layout_activity_main.xml.flat",
+        "source": "com.group.nasaspaceexplorer.app-main-35:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.group.nasaspaceexplorer.app-debug-33:/xml_network_security_config.xml.flat",
+        "source": "com.group.nasaspaceexplorer.app-main-35:/xml/network_security_config.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/layout_item_rover_photo.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/layout/item_rover_photo.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/layout_activity_explore.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/layout/activity_explore.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/drawable_badge_active.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/drawable/badge_active.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/drawable_spinner_background.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/drawable/spinner_background.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/drawable_ic_rocket.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/drawable/ic_rocket.xml"
+    },
+    {
+        "merged": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-debug-33:/layout_activity_mars_rover.xml.flat",
+        "source": "/Users/wenjie/.gradle/daemon/8.6/com.group.nasaspaceexplorer.app-main-35:/layout/activity_mars_rover.xml"
+    }
+]

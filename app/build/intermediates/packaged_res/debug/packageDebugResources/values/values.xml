@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="badge_active_bg">#2E7D32</color>
+    <color name="badge_complete_bg">#546E7A</color>
+    <color name="colorAccent">#4FC3F7</color>
+    <color name="colorPrimary">#0B3D91</color>
+    <color name="colorPrimaryDark">#0D1B2A</color>
+    <color name="divider_color">#2A3F5F</color>
+    <color name="error_red">#FF5252</color>
+    <color name="nasa_blue">#0B3D91</color>
+    <color name="nasa_blue_light">#4FC3F7</color>
+    <color name="nasa_red">#FC3D21</color>
+    <color name="space_bg">#0D1B2A</color>
+    <color name="space_surface">#1B2D4A</color>
+    <color name="text_primary">#E8EAF6</color>
+    <color name="text_secondary">#90A4AE</color>
+    <color name="thumbnail_placeholder">#0D1B2A</color>
+    <color name="white">#FFFFFF</color>
+    <string name="apod_image_desc">NASA Astronomy Picture of the Day</string>
+    <string name="apod_title">Astronomy Picture of the Day</string>
+    <string name="app_name">NASA Space Explorer</string>
+    <string name="btn_explore">EXPLORE SPACE</string>
+    <string name="btn_fetch">Fetch</string>
+    <string name="btn_search">Search Photos</string>
+    <string name="card_apod_subtitle">Daily featured image from NASA astronomers</string>
+    <string name="card_apod_title">Astronomy Picture of the Day</string>
+    <string name="card_mars_subtitle">Browse photos from Curiosity, Opportunity &amp; Spirit</string>
+    <string name="card_mars_title">Mars Rover Photos</string>
+    <string name="copyright_prefix">© %1$s</string>
+    <string name="detail_earth_date">Earth date: %1$s</string>
+    <string name="detail_photo_id">Photo ID: %1$d</string>
+    <string name="detail_sol">Sol: %1$d</string>
+    <string name="error_sol_empty">Please enter a Sol number.</string>
+    <string name="error_sol_invalid">Sol must be a whole number.</string>
+    <string name="error_sol_negative">Sol cannot be negative.</string>
+    <string name="explore_subtitle">Choose a feature to explore NASA\'s data</string>
+    <string name="explore_title">Explore</string>
+    <string name="group_assignment_label">This is a group assignment.</string>
+    <string name="group_name">CS5520 Group 2</string>
+    <string name="hint_sol">e.g. 1000</string>
+    <string name="label_select_camera">Select Camera:</string>
+    <string name="label_select_rover">Select Rover:</string>
+    <string name="label_sol">Martian Sol (Day):</string>
+    <string name="loading_prefix">Fetching data</string>
+    <string name="mars_title">Mars Rover Photos</string>
+    <string name="member_name">Zhongshu Gu, Yanxi Pan, Wenjie Liu</string>
+    <string name="no_photos_found">No photos found for this sol and camera.\nTry a different sol or select ALL cameras.</string>
+    <string name="result_count">Showing %1$d photos (page 1)</string>
+    <string name="rocket_desc">Rocket icon</string>
+    <string name="rover_curiosity">Curiosity</string>
+    <string name="rover_opportunity">Opportunity</string>
+    <string name="rover_photo_desc">Mars rover photograph</string>
+    <string name="rover_spirit">Spirit</string>
+    <string name="select_date_label">Select a date (APOD started June 16, 1995):</string>
+    <string name="sol_hint">Enter a value between 0 and %1$d</string>
+    <string name="tagline">Explore the cosmos with NASA\'s open data</string>
+    <string name="video_notice">Today\'s APOD is a video. Open the link below in a browser:</string>
+    <style name="Theme.NasaSpaceExplorer" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/nasa_blue</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/nasa_blue_light</item>
+        <item name="android:windowBackground">@color/space_bg</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:navigationBarColor">@color/space_bg</item>
+    </style>
+</resources>

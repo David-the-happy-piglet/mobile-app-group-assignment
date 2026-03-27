@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NASA Space Explorer</string>
+    <string name="group_name">CS5520 Group 2</string>
+    <string name="member_name">Zhongshu Gu, Yanxi Pan, Wenjie Liu</string>
+    <string name="group_assignment_label">This is a group assignment.</string>
+    <string name="tagline">Explore the cosmos with NASA\'s open data</string>
+    <string name="rocket_desc">Rocket icon</string>
+
+    <!-- Buttons -->
+    <string name="btn_explore">EXPLORE SPACE</string>
+    <string name="btn_fetch">Fetch</string>
+    <string name="btn_search">Search Photos</string>
+
+    <!-- Explore screen -->
+    <string name="explore_title">Explore</string>
+    <string name="explore_subtitle">Choose a feature to explore NASA\'s data</string>
+    <string name="card_apod_title">Astronomy Picture of the Day</string>
+    <string name="card_apod_subtitle">Daily featured image from NASA astronomers</string>
+    <string name="card_mars_title">Mars Rover Photos</string>
+    <string name="card_mars_subtitle">Browse photos from Curiosity, Opportunity &amp; Spirit</string>
+
+    <!-- APOD screen -->
+    <string name="apod_title">Astronomy Picture of the Day</string>
+    <string name="select_date_label">Select a date (APOD started June 16, 1995):</string>
+    <string name="copyright_prefix">© %1$s</string>
+    <string name="apod_image_desc">NASA Astronomy Picture of the Day</string>
+    <string name="video_notice">Today\'s APOD is a video. Open the link below in a browser:</string>
+
+    <!-- Mars Rover screen -->
+    <string name="mars_title">Mars Rover Photos</string>
+    <string name="label_select_rover">Select Rover:</string>
+    <string name="rover_curiosity">Curiosity</string>
+    <string name="rover_opportunity">Opportunity</string>
+    <string name="rover_spirit">Spirit</string>
+    <string name="label_select_camera">Select Camera:</string>
+    <string name="label_sol">Martian Sol (Day):</string>
+    <string name="sol_hint">Enter a value between 0 and %1$d</string>
+    <string name="hint_sol">e.g. 1000</string>
+
+    <!-- Validation errors -->
+    <string name="error_sol_empty">Please enter a Sol number.</string>
+    <string name="error_sol_invalid">Sol must be a whole number.</string>
+    <string name="error_sol_negative">Sol cannot be negative.</string>
+
+    <!-- Results screen -->
+    <string name="result_count">Showing %1$d photos (page 1)</string>
+    <string name="no_photos_found">No photos found for this sol and camera.\nTry a different sol or select ALL cameras.</string>
+    <string name="rover_photo_desc">Mars rover photograph</string>
+
+    <!-- Detail screen -->
+    <string name="detail_sol">Sol: %1$d</string>
+    <string name="detail_earth_date">Earth date: %1$s</string>
+    <string name="detail_photo_id">Photo ID: %1$d</string>
+
+    <!-- Loading -->
+    <string name="loading_prefix">Fetching data</string>
+</resources>
