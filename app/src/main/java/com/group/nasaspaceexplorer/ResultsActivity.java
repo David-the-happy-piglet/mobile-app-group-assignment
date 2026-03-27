@@ -66,36 +66,9 @@ public class ResultsActivity extends AppCompatActivity {
     }
 
     private void fetchPhotos(String rover, String camera, int sol) {
-        setUiState(UiState.LOADING);
-
-        NasaApiClient.fetchRoverPhotos(rover, camera, sol,
-                new NasaApiClient.ApiCallback<List<RoverPhoto>>() {
-                    @Override
-                    public void onSuccess(List<RoverPhoto> photos) {
-                        stopLoadingAnimation();
-                        if (photos.isEmpty()) {
-                            setUiState(UiState.EMPTY);
-                        } else {
-                            setUiState(UiState.RESULTS);
-                            tvResultCount.setText(
-                                    getString(R.string.result_count, photos.size()));
-                            RoverPhotoAdapter adapter = new RoverPhotoAdapter(photos, photo -> {
-                                Intent intent = new Intent(ResultsActivity.this,
-                                        DetailActivity.class);
-                                intent.putExtra(DetailActivity.EXTRA_PHOTO, photo);
-                                startActivity(intent);
-                            });
-                            recyclerView.setAdapter(adapter);
-                        }
-                    }
-
-                    @Override
-                    public void onError(String errorMessage) {
-                        stopLoadingAnimation();
-                        setUiState(UiState.ERROR);
-                        tvError.setText(errorMessage);
-                    }
-                });
+        // This activity is no longer used; Perseverance latest photos
+        // are now loaded directly in MarsRoverActivity.
+        finish();
     }
 
     // ── Loading animation ─────────────────────────────────────────────────────

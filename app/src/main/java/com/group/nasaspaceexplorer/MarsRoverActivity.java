@@ -1,44 +1,46 @@
 package com.group.nasaspaceexplorer;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.group.nasaspaceexplorer.adapter.EpicPhotoAdapter;
+import com.group.nasaspaceexplorer.model.EpicPhoto;
+import com.group.nasaspaceexplorer.network.NasaApiClient;
+
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 
 public class MarsRoverActivity extends AppCompatActivity {
 
-    // Camera lists per rover
-    private static final String[] CAMERAS_CURIOSITY = {
-            "ALL", "FHAZ", "RHAZ", "MAST", "CHEMCAM", "MAHLI", "MARDI", "NAVCAM"
-    };
-    private static final String[] CAMERAS_OPPORTUNITY = {
-            "ALL", "FHAZ", "RHAZ", "NAVCAM", "PANCAM", "MINITES"
-    };
-    private static final String[] CAMERAS_SPIRIT = {
-            "ALL", "FHAZ", "RHAZ", "NAVCAM", "PANCAM", "MINITES"
-    };
-
-    // Approximate max sols per rover
-    private static final int MAX_SOL_CURIOSITY   = 4000;
-    private static final int MAX_SOL_OPPORTUNITY = 5111;
-    private static final int MAX_SOL_SPIRIT       = 2208;
-
-    private RadioGroup radioGroupRover;
-    private RadioButton radioCuriosity, radioOpportunity, radioSpirit;
-    private Spinner spinnerCamera;
-    private EditText etSol;
-    private TextView tvSolHint;
+    private Button btnSelectDate;
     private Button btnSearch;
+
+    private int selectedYear, selectedMonth, selectedDay;
+
+    private LinearLayout layoutLoading;
+    private TextView tvLoadingText;
+    private RecyclerView recyclerView;
+    private TextView tvEmpty;
+    private TextView tvError;
+    private TextView tvResultCount;
+
+    private final Handler animationHandler = new Handler(Looper.getMainLooper());
+    private Runnable animationRunnable;
+    private int dotCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,90 +51,132 @@ public class MarsRoverActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle(R.string.mars_title);
+            getSupportActionBar().setTitle("EPIC Earth Photos");
         }
 
-        radioGroupRover = findViewById(R.id.radio_group_rover);
-        radioCuriosity  = findViewById(R.id.radio_curiosity);
-        radioOpportunity = findViewById(R.id.radio_opportunity);
-        radioSpirit     = findViewById(R.id.radio_spirit);
-        spinnerCamera   = findViewById(R.id.spinner_camera);
-        etSol           = findViewById(R.id.et_sol);
-        tvSolHint       = findViewById(R.id.tv_sol_hint);
-        btnSearch       = findViewById(R.id.btn_search);
+        btnSelectDate = findViewById(R.id.btn_select_date);
+        btnSearch     = findViewById(R.id.btn_search);
+        layoutLoading = findViewById(R.id.layout_loading);
+        tvLoadingText = findViewById(R.id.tv_loading_text);
+        recyclerView  = findViewById(R.id.recycler_view);
+        tvEmpty       = findViewById(R.id.tv_empty);
+        tvError       = findViewById(R.id.tv_error);
+        tvResultCount = findViewById(R.id.tv_result_count);
 
-        // Default: Curiosity selected
-        radioCuriosity.setChecked(true);
-        updateCameraSpinner("Curiosity");
-        updateSolHint("Curiosity");
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
-        radioGroupRover.setOnCheckedChangeListener((group, checkedId) -> {
-            String rover = getRoverName(checkedId);
-            updateCameraSpinner(rover);
-            updateSolHint(rover);
+        // 默认日期：今天
+        Calendar today = Calendar.getInstance();
+        selectedYear  = today.get(Calendar.YEAR);
+        selectedMonth = today.get(Calendar.MONTH);
+        selectedDay   = today.get(Calendar.DAY_OF_MONTH);
+        updateDateButton();
+
+        btnSelectDate.setOnClickListener(v -> showDatePicker());
+        btnSearch.setOnClickListener(v -> fetchPhotos());
+    }
+
+    private void showDatePicker() {
+        DatePickerDialog dialog = new DatePickerDialog(
+                this,
+                (view, year, month, day) -> {
+                    selectedYear  = year;
+                    selectedMonth = month;
+                    selectedDay   = day;
+                    updateDateButton();
+                },
+                selectedYear, selectedMonth, selectedDay);
+
+        // EPIC 数据从 2015-09-01 开始
+        Calendar minDate = Calendar.getInstance();
+        minDate.set(2015, Calendar.SEPTEMBER, 1);
+        dialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
+        dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+        dialog.show();
+    }
+
+    private void updateDateButton() {
+        String label = String.format(Locale.US, "%d-%02d-%02d",
+                selectedYear, selectedMonth + 1, selectedDay);
+        btnSelectDate.setText(label);
+    }
+
+    private void fetchPhotos() {
+        String date = String.format(Locale.US, "%d-%02d-%02d",
+                selectedYear, selectedMonth + 1, selectedDay);
+
+        setUiState(UiState.LOADING);
+
+        NasaApiClient.fetchEpicPhotos(date, new NasaApiClient.ApiCallback<List<EpicPhoto>>() {
+            @Override
+            public void onSuccess(List<EpicPhoto> photos) {
+                stopLoadingAnimation();
+                if (photos.isEmpty()) {
+                    setUiState(UiState.EMPTY);
+                } else {
+                    setUiState(UiState.RESULTS);
+                    tvResultCount.setText(getString(R.string.result_count, photos.size()));
+                    EpicPhotoAdapter adapter = new EpicPhotoAdapter(photos, photo -> {
+                        Intent intent = new Intent(MarsRoverActivity.this, DetailActivity.class);
+                        intent.putExtra("extra_epic_photo", photo);
+                        startActivity(intent);
+                    });
+                    recyclerView.setAdapter(adapter);
+                }
+            }
+
+            @Override
+            public void onError(String errorMessage) {
+                stopLoadingAnimation();
+                setUiState(UiState.ERROR);
+                tvError.setText(errorMessage);
+            }
         });
-
-        btnSearch.setOnClickListener(v -> attemptSearch());
     }
 
-    private String getRoverName(int checkedId) {
-        if (checkedId == R.id.radio_curiosity)   return "Curiosity";
-        if (checkedId == R.id.radio_opportunity) return "Opportunity";
-        if (checkedId == R.id.radio_spirit)      return "Spirit";
-        return "Curiosity";
+    // ── Loading animation ─────────────────────────────────────────────────────
+
+    private void startLoadingAnimation() {
+        dotCount = 0;
+        animationRunnable = new Runnable() {
+            @Override
+            public void run() {
+                dotCount = (dotCount % 3) + 1;
+                StringBuilder sb = new StringBuilder(getString(R.string.loading_prefix));
+                for (int i = 0; i < dotCount; i++) sb.append('.');
+                tvLoadingText.setText(sb.toString());
+                animationHandler.postDelayed(this, 500);
+            }
+        };
+        animationHandler.post(animationRunnable);
     }
 
-    private void updateCameraSpinner(String rover) {
-        String[] cameras;
-        switch (rover) {
-            case "Opportunity": cameras = CAMERAS_OPPORTUNITY; break;
-            case "Spirit":      cameras = CAMERAS_SPIRIT;      break;
-            default:            cameras = CAMERAS_CURIOSITY;   break;
+    private void stopLoadingAnimation() {
+        if (animationRunnable != null) {
+            animationHandler.removeCallbacks(animationRunnable);
+            animationRunnable = null;
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_spinner_item, cameras);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCamera.setAdapter(adapter);
     }
 
-    private void updateSolHint(String rover) {
-        int max;
-        switch (rover) {
-            case "Opportunity": max = MAX_SOL_OPPORTUNITY; break;
-            case "Spirit":      max = MAX_SOL_SPIRIT;      break;
-            default:            max = MAX_SOL_CURIOSITY;   break;
-        }
-        tvSolHint.setText(getString(R.string.sol_hint, max));
+    // ── UI state ──────────────────────────────────────────────────────────────
+
+    private enum UiState { IDLE, LOADING, RESULTS, EMPTY, ERROR }
+
+    private void setUiState(UiState state) {
+        layoutLoading.setVisibility(state == UiState.LOADING  ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility( state == UiState.RESULTS  ? View.VISIBLE : View.GONE);
+        tvEmpty.setVisibility(      state == UiState.EMPTY    ? View.VISIBLE : View.GONE);
+        tvError.setVisibility(      state == UiState.ERROR    ? View.VISIBLE : View.GONE);
+        tvResultCount.setVisibility(state == UiState.RESULTS  ? View.VISIBLE : View.GONE);
+        btnSearch.setEnabled(state != UiState.LOADING);
+        btnSelectDate.setEnabled(state != UiState.LOADING);
+        if (state == UiState.LOADING) startLoadingAnimation();
     }
 
-    private void attemptSearch() {
-        String solStr = etSol.getText().toString().trim();
-        if (solStr.isEmpty()) {
-            Toast.makeText(this, R.string.error_sol_empty, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        int sol;
-        try {
-            sol = Integer.parseInt(solStr);
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, R.string.error_sol_invalid, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (sol < 0) {
-            Toast.makeText(this, R.string.error_sol_negative, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String rover  = getRoverName(radioGroupRover.getCheckedRadioButtonId());
-        String camera = spinnerCamera.getSelectedItem().toString();
-
-        Intent intent = new Intent(this, ResultsActivity.class);
-        intent.putExtra(ResultsActivity.EXTRA_ROVER,  rover);
-        intent.putExtra(ResultsActivity.EXTRA_CAMERA, camera);
-        intent.putExtra(ResultsActivity.EXTRA_SOL,    sol);
-        startActivity(intent);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopLoadingAnimation();
     }
 
     @Override

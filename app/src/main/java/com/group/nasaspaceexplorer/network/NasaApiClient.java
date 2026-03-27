@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.group.nasaspaceexplorer.model.ApodData;
-import com.group.nasaspaceexplorer.model.RoverPhoto;
+import com.group.nasaspaceexplorer.model.EpicPhoto;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,9 +24,11 @@ import java.util.concurrent.Executors;
 
 public class NasaApiClient {
 
-    // Get a free key at https://api.nasa.gov/  (DEMO_KEY: 30 req/hr, 50 req/day per IP)
-    private static final String API_KEY = "0UshwmRznbPFXKacRzXbVQeR4cm6nSkpflqXa7DO";
+    private static final String API_KEY  = "0UshwmRznbPFXKacRzXbVQeR4cm6nSkpflqXa7DO"; // 换成真实 key
     private static final String BASE_URL = "https://api.nasa.gov";
+    // EPIC 托管在独立域名，不走 api.nasa.gov，不需要 key，不限速
+    private static final String EPIC_BASE = "https://epic.gsfc.nasa.gov";
+
     private static final ExecutorService executor = Executors.newFixedThreadPool(3);
 
     public interface ApiCallback<T> {
@@ -34,47 +36,45 @@ public class NasaApiClient {
         void onError(String errorMessage);
     }
 
-    // ── APOD ─────────────────────────────────────────────────────────────────
+    // ── APOD ──────────────────────────────────────────────────────────────────
 
     public static void fetchApod(String date, ApiCallback<ApodData> callback) {
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
             try {
                 String urlStr = BASE_URL + "/planetary/apod?api_key=" + API_KEY;
-                if (date != null && !date.isEmpty()) {
-                    urlStr += "&date=" + date;
-                }
+                if (date != null && !date.isEmpty()) urlStr += "&date=" + date;
                 String response = makeGetRequest(urlStr);
                 ApodData apod = parseApod(response);
                 handler.post(() -> callback.onSuccess(apod));
             } catch (Exception e) {
-                String msg = friendlyError(e);
-                handler.post(() -> callback.onError(msg));
+                handler.post(() -> callback.onError(friendlyError(e)));
             }
         });
     }
 
-    // ── Mars Rover Photos ─────────────────────────────────────────────────────
+    // ── EPIC Earth Photos ─────────────────────────────────────────────────────
 
-    public static void fetchRoverPhotos(String rover, String camera, int sol,
-                                        ApiCallback<List<RoverPhoto>> callback) {
+    /**
+     * 按日期获取 EPIC 自然色地球照片列表。
+     * date 格式 "YYYY-MM-DD"；传 null 则获取最新一天的照片。
+     * 使用 epic.gsfc.nasa.gov，无需 API key，无速率限制。
+     */
+    public static void fetchEpicPhotos(String date, ApiCallback<List<EpicPhoto>> callback) {
         Handler handler = new Handler(Looper.getMainLooper());
         executor.execute(() -> {
             try {
-                String urlStr = BASE_URL + "/mars-photos/api/v1/rovers/"
-                        + rover.toLowerCase()
-                        + "/photos?sol=" + sol
-                        + "&page=1"
-                        + "&api_key=" + API_KEY;
-                if (camera != null && !camera.equalsIgnoreCase("ALL")) {
-                    urlStr += "&camera=" + camera.toLowerCase();
+                String urlStr;
+                if (date != null && !date.isEmpty()) {
+                    urlStr = EPIC_BASE + "/api/natural/date/" + date;
+                } else {
+                    urlStr = EPIC_BASE + "/api/natural";
                 }
                 String response = makeGetRequest(urlStr);
-                List<RoverPhoto> photos = parseRoverPhotos(response);
+                List<EpicPhoto> photos = parseEpicPhotos(response);
                 handler.post(() -> callback.onSuccess(photos));
             } catch (Exception e) {
-                String msg = friendlyError(e);
-                handler.post(() -> callback.onError(msg));
+                handler.post(() -> callback.onError(friendlyError(e)));
             }
         });
     }
@@ -86,7 +86,7 @@ public class NasaApiClient {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setConnectTimeout(15000);
-        connection.setReadTimeout(20000);
+        connection.setReadTimeout(30000);
         connection.setRequestProperty("Accept", "application/json");
 
         int code = connection.getResponseCode();
@@ -95,14 +95,11 @@ public class NasaApiClient {
                     new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
+            while ((line = reader.readLine()) != null) sb.append(line);
             reader.close();
             connection.disconnect();
             return sb.toString();
         } else {
-            // Try to read error body for a better message
             InputStream errStream = connection.getErrorStream();
             String body = "";
             if (errStream != null) {
@@ -134,28 +131,24 @@ public class NasaApiClient {
         return apod;
     }
 
-    private static List<RoverPhoto> parseRoverPhotos(String json) throws JSONException {
-        JSONObject root = new JSONObject(json);
-        JSONArray photosArr = root.getJSONArray("photos");
-        List<RoverPhoto> photos = new ArrayList<>();
-        for (int i = 0; i < photosArr.length(); i++) {
-            JSONObject obj = photosArr.getJSONObject(i);
-            RoverPhoto photo = new RoverPhoto();
-            photo.setId(obj.optInt("id", 0));
-            photo.setSol(obj.optInt("sol", 0));
-            photo.setImgSrc(obj.optString("img_src", ""));
-            photo.setEarthDate(obj.optString("earth_date", ""));
+    private static List<EpicPhoto> parseEpicPhotos(String json) throws JSONException {
+        JSONArray arr = new JSONArray(json);
+        List<EpicPhoto> photos = new ArrayList<>();
+        for (int i = 0; i < arr.length(); i++) {
+            JSONObject obj = arr.getJSONObject(i);
+            EpicPhoto photo = new EpicPhoto();
+            photo.setIdentifier(obj.optString("identifier", ""));
+            photo.setCaption(obj.optString("caption", ""));
+            photo.setImage(obj.optString("image", ""));
+            photo.setDate(obj.optString("date", ""));
 
-            JSONObject cam = obj.optJSONObject("camera");
-            if (cam != null) {
-                photo.setCameraName(cam.optString("name", ""));
-                photo.setCameraFullName(cam.optString("full_name", ""));
-            }
-
-            JSONObject rover = obj.optJSONObject("rover");
-            if (rover != null) {
-                photo.setRoverName(rover.optString("name", ""));
-                photo.setRoverStatus(rover.optString("status", ""));
+            JSONObject coords = obj.optJSONObject("coords");
+            if (coords != null) {
+                JSONObject centroid = coords.optJSONObject("centroid_coordinates");
+                if (centroid != null) {
+                    photo.setLat(centroid.optDouble("lat", 0));
+                    photo.setLon(centroid.optDouble("lon", 0));
+                }
             }
             photos.add(photo);
         }
@@ -167,7 +160,7 @@ public class NasaApiClient {
     private static String friendlyError(Exception e) {
         String msg = e.getMessage();
         if (msg == null) return "Unknown error occurred.";
-        if (msg.contains("HTTP 404")) return "No photos found for this Sol. Try a different Sol number.";  // ← 新增
+        if (msg.contains("HTTP 404")) return "No photos found for this date. Try a different date.";
         if (msg.contains("HTTP 429")) return "Rate limit reached. Please wait a minute and try again.";
         if (msg.contains("HTTP 403")) return "API key invalid or rate limit exceeded.";
         if (msg.contains("UnknownHost") || msg.contains("unable to resolve"))

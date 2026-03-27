@@ -14,122 +14,132 @@
         android:background="@color/space_surface"
         app:titleTextColor="@color/white" />
 
-    <ScrollView
+    <!-- 输入区 -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="@color/space_bg">
 
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:text="EPIC Earth Viewer"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp" />
 
-            <!-- Rover selection -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_select_rover"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Full-disc Earth photos captured by NASA&#39;s DSCOVR satellite from 1.5 million km away."
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:layout_marginBottom="16dp" />
 
-            <RadioGroup
-                android:id="@+id/radio_group_rover"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="24dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_date_label"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
 
-                <RadioButton
-                    android:id="@+id/radio_curiosity"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/rover_curiosity"
-                    android:textColor="@color/white"
-                    android:buttonTint="@color/nasa_blue_light" />
+        <Button
+            android:id="@+id/btn_select_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/space_surface"
+            android:textColor="@color/white"
+            android:layout_marginBottom="16dp"
+            android:text="YYYY-MM-DD" />
 
-                <RadioButton
-                    android:id="@+id/radio_opportunity"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/rover_opportunity"
-                    android:textColor="@color/white"
-                    android:buttonTint="@color/nasa_blue_light" />
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/btn_search"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/nasa_red" />
 
-                <RadioButton
-                    android:id="@+id/radio_spirit"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/rover_spirit"
-                    android:textColor="@color/white"
-                    android:buttonTint="@color/nasa_blue_light" />
+    </LinearLayout>
 
-            </RadioGroup>
+    <!-- Result count -->
+    <TextView
+        android:id="@+id/tv_result_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/text_secondary"
+        android:textSize="12sp"
+        android:paddingStart="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:visibility="gone" />
 
-            <!-- Camera selection -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_select_camera"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+    <!-- Loading -->
+    <LinearLayout
+        android:id="@+id/layout_loading"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
 
-            <Spinner
-                android:id="@+id/spinner_camera"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/spinner_background"
-                android:popupBackground="@color/space_surface"
-                android:layout_marginBottom="24dp" />
+        <ProgressBar
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/nasa_blue_light" />
 
-            <!-- Sol input -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/label_sol"
-                android:textColor="@color/white"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="4dp" />
+        <TextView
+            android:id="@+id/tv_loading_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_prefix"
+            android:textColor="@color/nasa_blue_light"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_sol_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/text_secondary"
-                android:textSize="12sp"
-                android:layout_marginBottom="8dp" />
+    <!-- Empty -->
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="@string/no_photos_found"
+        android:textColor="@color/text_secondary"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone" />
 
-            <EditText
-                android:id="@+id/et_sol"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_sol"
-                android:inputType="number"
-                android:textColor="@color/white"
-                android:textColorHint="@color/text_secondary"
-                android:backgroundTint="@color/nasa_blue_light"
-                android:padding="12dp"
-                android:layout_marginBottom="32dp" />
+    <!-- Error -->
+    <TextView
+        android:id="@+id/tv_error"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textColor="@color/error_red"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone" />
 
-            <!-- Search button -->
-            <Button
-                android:id="@+id/btn_search"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="@string/btn_search"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:backgroundTint="@color/nasa_red" />
-
-        </LinearLayout>
-    </ScrollView>
+    <!-- Photo grid -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="4dp"
+        android:clipToPadding="false"
+        android:visibility="gone" />
 
 </LinearLayout>

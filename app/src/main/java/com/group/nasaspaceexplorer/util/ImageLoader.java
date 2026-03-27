@@ -125,7 +125,7 @@ public class ImageLoader {
             conn = (HttpURLConnection) url.openConnection();
             conn.setDoInput(true);
             conn.setConnectTimeout(15000);
-            conn.setReadTimeout(30000);
+            conn.setReadTimeout(60000);
             conn.setInstanceFollowRedirects(true); // handles same-protocol redirects
             conn.connect();
 
